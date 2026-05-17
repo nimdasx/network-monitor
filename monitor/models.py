@@ -21,6 +21,7 @@ class ArpState(Enum):
 @dataclass
 class HostEntry:
     host: str
+    name: str = ""
     ping_status: PingStatus = PingStatus.OFFLINE
     latency_ms: float | None = None
     mac_address: str = "N/A"

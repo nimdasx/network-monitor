@@ -10,7 +10,7 @@ from .config import PING_INTERVAL, load_hosts
 from .models import ArpState, HostEntry, PingStatus
 from .ping import ping_host
 
-COLUMNS = ("HOST/IP", "PING STATUS", "MAC ADDRESS", "ARP STATE", "LAST UPDATE")
+COLUMNS = ("NAME", "HOST/IP", "PING STATUS", "MAC ADDRESS", "ARP STATE", "LAST UPDATE")
 
 PING_COLORS: dict[PingStatus, str] = {
     PingStatus.ONLINE: "green",
@@ -53,11 +53,11 @@ class NetworkMonitorApp(App):
             table.add_column(col, key=col)
 
         hosts = load_hosts()
-        for host in hosts:
-            entry = HostEntry(host=host)
+        for host, name in hosts:
+            entry = HostEntry(host=host, name=name)
             self.entries.append(entry)
             table.add_row(
-                host, _ping_text(entry), "N/A", _arp_text(entry), "-",
+                name, host, _ping_text(entry), "N/A", _arp_text(entry), "-",
                 key=host,
             )
 
@@ -74,6 +74,7 @@ class NetworkMonitorApp(App):
         table = self.query_one(DataTable)
         for entry in self.entries:
             last = entry.last_update.strftime("%H:%M:%S") if entry.last_update else "-"
+            table.update_cell(entry.host, "NAME", entry.name)
             table.update_cell(entry.host, "HOST/IP", entry.host)
             table.update_cell(entry.host, "PING STATUS", _ping_text(entry))
             table.update_cell(entry.host, "MAC ADDRESS", entry.mac_address)
