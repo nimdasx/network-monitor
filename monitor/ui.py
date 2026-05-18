@@ -5,6 +5,8 @@ from rich.text import Text
 from textual.app import App, ComposeResult
 from textual.widgets import DataTable, Footer, Header
 
+from pathlib import Path
+
 from .arp import resolve_arp
 from .config import PING_INTERVAL, load_hosts
 from .models import ArpState, HostEntry, PingStatus
@@ -37,8 +39,9 @@ class NetworkMonitorApp(App):
     TITLE = "Network Monitor"
     BINDINGS = [("q", "quit", "Quit")]
 
-    def __init__(self) -> None:
+    def __init__(self, hosts_file: Path | None = None) -> None:
         super().__init__()
+        self.hosts_file = hosts_file
         self.entries: list[HostEntry] = []
 
     def compose(self) -> ComposeResult:
@@ -52,7 +55,7 @@ class NetworkMonitorApp(App):
         for col in COLUMNS:
             table.add_column(col, key=col)
 
-        hosts = load_hosts()
+        hosts = load_hosts(self.hosts_file) if self.hosts_file else load_hosts()
         for host, name in hosts:
             entry = HostEntry(host=host, name=name)
             self.entries.append(entry)

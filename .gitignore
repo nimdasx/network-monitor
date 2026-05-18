@@ -11,3 +11,6 @@ wheels/
 
 # macOS
 .DS_Store
+
+# Custom host files
+hosts.*.txt

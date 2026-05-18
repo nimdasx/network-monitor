@@ -19,11 +19,17 @@ uv sync
 uv run python app.py
 ```
 
+Or specify a custom hosts file:
+
+```bash
+uv run python app.py servers.txt
+```
+
 Press `q` to quit.
 
 ## Host Configuration
 
-Edit `hosts.txt` — one host/IP per line, `#` for comments:
+One host/IP per line. Comments (`#`) above a host become its label in the NAME column:
 
 ```txt
 # Gateway
